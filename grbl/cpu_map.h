@@ -351,6 +351,33 @@
     #define SPINDLE_PWM_DDR   DDRH
     #define SPINDLE_PWM_PORT  PORTH
     #define SPINDLE_PWM_BIT   5 // MEGA2560 Digital Pin 8
+    
+  #elif defined (SPINDLE_PWM_ON_D9)  
+  
+    // Set Timer up to use TIMER2B which is attached to Digital Pin 9 - 3Drag HEATER2
+    #define SPINDLE_PWM_MAX_VALUE     255.0 // Translates to about 7.8 kHz PWM frequency at 1/8 prescaler
+    #ifndef SPINDLE_PWM_MIN_VALUE
+      #define SPINDLE_PWM_MIN_VALUE   1   // Must be greater than zero.
+    #endif
+    #define SPINDLE_PWM_OFF_VALUE     0
+    #define SPINDLE_PWM_RANGE         (SPINDLE_PWM_MAX_VALUE-SPINDLE_PWM_MIN_VALUE)
+
+    //Control Digital Pin 9
+    #define SPINDLE_TCCRA_REGISTER    TCCR2A
+    #define SPINDLE_TCCRB_REGISTER    TCCR2B
+    #define SPINDLE_OCR_REGISTER      OCR2B
+    #define SPINDLE_COMB_BIT          COM2B1
+
+    // 1/8 Prescaler, 8-bit Fast PWM mode
+    #define SPINDLE_TCCRA_INIT_MASK ((1<<WGM20) | (1<<WGM21) | (1<<COM2B1))
+    #define SPINDLE_TCCRB_INIT_MASK ((1<<WGM22) | (1<<CS21))
+    #define SPINDLE_OCRA_REGISTER   OCR2A // 8-bit Fast PWM mode requires top reset value stored here.
+    #define SPINDLE_OCRA_TOP_VALUE  0xFF // PWM counter reset value. Should be the same as PWM_MAX_VALUE in hex.
+
+    // Define spindle output pins.
+    #define SPINDLE_PWM_DDR   DDRH
+    #define SPINDLE_PWM_PORT  PORTH
+    #define SPINDLE_PWM_BIT   6 // MEGA2560 Digital Pin 9 - 3DRAG HEATER2    
 
   #elif defined (SPINDLE_PWM_ON_D6)
 
